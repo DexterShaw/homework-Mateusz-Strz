@@ -28,15 +28,12 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :param month: Month to get the cases for as an integer indexed from 1
     :return: Number of cases on a given date as an integer
     """
-    CONFIRMED_CASES_URL = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data" \
-                      f"/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv "
-    confirmed_cases = pd.read_csv(CONFIRMED_CASES_URL, error_bad_lines=False)
 
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
-    date = datetime.date(year, month, day)
-    date = date.strftime('%#m/%#d/%y')
-    infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][date].values[0]
+    today = datetime.date(year, month, day)
+    today = today.strftime('%#m/%#d/%y')
+    infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][today].values[0]
     return infection
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
@@ -56,10 +53,10 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
-    date = datetime.date(year, month, day)
-    date = date.strftime('%#m/%#d/%y')
-    top =  confirmed_cases[['Province/State', 'Country/Region', date]]
-    return list(top.groupby('Country/Region').sum().sort_values(by=date, ascending=False).head(5).index.values)
+    today = datetime.date(year, month, day)
+    today = date.strftime('%#m/%#d/%y')
+    top =  confirmed_cases[['Province/State', 'Country/Region', today]]
+    return list(top.groupby('Country/Region').sum().sort_values(by=today, ascending=False).head(5).index.values)
 
 
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
@@ -79,9 +76,8 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     """
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
-    date = datetime.date(year, month, day)
-    yesterday = date + datetime.timedelta(days=-1)
-    date = date.strftime('%#m/%#d/%y')
+    today = datetime.date(year, month, day)
+    yesterday = today + datetime.timedelta(days=-1)
+    today = date.strftime('%#m/%#d/%y')
     yesterday = yesterday.strftime('%#m/%#d/%y')
-    wynik = confirmed_cases.groupby(['Country/Region']).sum()
-    return wynik[wynik[date]==wynik[yesterday]].count()[0]
+    return wynik[wynik[today]<=wynik[yesterday]].shape[0]
