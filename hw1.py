@@ -27,7 +27,8 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :param month: Month to get the cases for as an integer indexed from 1
     :return: Number of cases on a given date as an integer
     """
-    
+    if day==0 or month==0 or year==0:
+        raise ValueError("if either number was negative")
     infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][f"{month}/{day}/{year-2000}"].values[0]
     return infection
 
@@ -47,6 +48,8 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: A list of strings with the names of the coutires
     """
+    if day==0 or month==0 or year==0:
+        raise ValueError("if either number was negative")
     data = f"{month}/{day}/{year-2000}"
     top =  confirmed_cases[['Province/State', 'Country/Region', data]]
     return list(top.groupby('Country/Region').sum().sort_values(by=data, ascending=False).head(5).index.values)
