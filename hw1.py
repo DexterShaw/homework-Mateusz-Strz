@@ -28,8 +28,8 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :return: Number of cases on a given date as an integer
     """
     
-    # Your code goes here (remove pass)
-    pass
+    infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][f"{month}/{day}/{year-2000}"].values[0]
+    return infection
 
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
@@ -47,9 +47,9 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: A list of strings with the names of the coutires
     """
-
-    # Your code goes here (remove pass)
-    pass
+    data = f"{month}/{day}/{year-2000}"
+    top =  confirmed_cases[['Province/State', 'Country/Region', data]]
+    return list(top.groupby('Country/Region').sum().sort_values(by=data, ascending=False).head(5).index.values)
 
 
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
@@ -67,6 +67,31 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: Number of countries/regions where the count has not changed in a day
     """
-    
-    # Your code goes here (remove pass)
-    pass
+    data = f"{month}/{day}/{year-2000}"
+    if day!=1:
+        day_wczoraj = day -1
+        month_wczoraj= month
+        year_wczoraj = year
+    else:
+        if month in [2,4,6,9,11]:
+            day_wczoraj = 31
+            month_wczoraj= month -1
+            year_wczoraj = year
+        elif month == 3:
+            if year%4==0:
+                day_wczoraj=29
+            else:
+                day_wczoraj=28
+            month_wczoraj= month -1
+            year_wczoraj = year
+        elif month ==1:
+            day_wczoraj = 31
+            month_wczoraj = 12
+            year_wczoraj = year -1
+        else:
+            day_wczoraj = 30
+            month_wczoraj= month -1
+            year_wczoraj = year
+    data_wczoraj= f"{month_wczoraj}/{day_wczoraj}/{year_wczoraj-2000}"
+    wynik = confirmed_cases.groupby(['Country/Region']).sum()
+    return wynik[wynik[data]==wynik[data_wczoraj]].count()[0]
