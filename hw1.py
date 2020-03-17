@@ -68,32 +68,32 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     :return: Number of countries/regions where the count has not changed in a day
     """
     if day==0 or month==0 or year==0:
-      raise ValueError("if either number was negative")
+        raise ValueError("if either number was negative")
     data = f"{month}/{day}/{year-2000}"
     if day!=1:
-      day_wczoraj = day -1
-      month_wczoraj= month
-      year_wczoraj = year
-    else:
-      if month in [2,4,6,9,11]:
-        day_wczoraj = 31
-        month_wczoraj= month -1
+        day_wczoraj = day -1
+        month_wczoraj= month
         year_wczoraj = year
+    else:
+        if month in [2,4,6,9,11]:
+            day_wczoraj = 31
+            month_wczoraj= month -1
+            year_wczoraj = year
         elif month == 3:
-          if year%4==0:
-            day_wczoraj=29
-          else:
-            day_wczoraj=28
-          month_wczoraj= month -1
-          year_wczoraj = year
+            if year%4==0:
+                day_wczoraj=29
+            else:
+                day_wczoraj=28
+            month_wczoraj= month -1
+            year_wczoraj = year
         elif month ==1:
-          day_wczoraj = 31
-          month_wczoraj = 12
-          year_wczoraj = year -1
+            day_wczoraj = 31
+            month_wczoraj = 12
+            year_wczoraj = year -1
         else:
-          day_wczoraj = 30
-          month_wczoraj= month -1
-          year_wczoraj = year
+            day_wczoraj = 30
+            month_wczoraj= month -1
+            year_wczoraj = year
     data_wczoraj= f"{month_wczoraj}/{day_wczoraj}/{year_wczoraj-2000}"
     wynik = confirmed_cases.groupby(['Country/Region']).sum()
-    return wynik[wynik[data]==wynik[data_wczoraj]].count()[0]
+    return wynik[wynik[data]!=wynik[data_wczoraj]].count()[0]
