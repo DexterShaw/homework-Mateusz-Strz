@@ -1,6 +1,7 @@
 from typing import List
 
 import pandas as pd
+import datetime
 
 CONFIRMED_CASES_URL = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data" \
                       f"/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv "
@@ -29,9 +30,11 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     """
     if day==0 or month==0 or year==0:
         raise ValueError("if either number was negative")
-    infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][f"{month}/{day}/{year-2000}"].values[0]
+    date = datetime.date(year, month, day)
+    date = date.strftime('%#m/%#d/%y')
+    print(date)
+    infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][date].values[0]
     return infection
-
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
@@ -50,9 +53,10 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
     if day==0 or month==0 or year==0:
         raise ValueError("if either number was negative")
-    data = f"{month}/{day}/{year-2000}"
-    top =  confirmed_cases[['Province/State', 'Country/Region', data]]
-    return list(top.groupby('Country/Region').sum().sort_values(by=data, ascending=False).head(5).index.values)
+    date = datetime.date(year, month, day)
+    date = date.strftime('%#m/%#d/%y')
+    top =  confirmed_cases[['Province/State', 'Country/Region', date]]
+    return list(top.groupby('Country/Region').sum().sort_values(by=date, ascending=False).head(5).index.values)
 
 
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
@@ -72,31 +76,11 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     """
     if day==0 or month==0 or year==0:
         raise ValueError("if either number was negative")
-    data = f"{month}/{day}/{year-2000}"
-    if day!=1:
-        day_wczoraj = day -1
-        month_wczoraj= month
-        year_wczoraj = year
-    else:
-        if month in [2,4,6,9,11]:
-            day_wczoraj = 31
-            month_wczoraj= month -1
-            year_wczoraj = year
-        elif month == 3:
-            if year%4==0:
-                day_wczoraj=29
-            else:
-                day_wczoraj=28
-            month_wczoraj= month -1
-            year_wczoraj = year
-        elif month ==1:
-            day_wczoraj = 31
-            month_wczoraj = 12
-            year_wczoraj = year -1
-        else:
-            day_wczoraj = 30
-            month_wczoraj= month -1
-            year_wczoraj = year
-    data_wczoraj= f"{month_wczoraj}/{day_wczoraj}/{year_wczoraj-2000}"
+    date = datetime.date(year, month, day)
+    yesterday = date + datetime.timedelta(days=-1)
+    date = date.strftime('%#m/%#d/%y')
+    yesterday = yesterday.strftime('%#m/%#d/%y')
+    print(date)
+    print(yesterday)
     wynik = confirmed_cases.groupby(['Country/Region']).sum()
-    return wynik[wynik[data]!=wynik[data_wczoraj]].count()[0]
+    return wynik[wynik[date]==wynik[yesterday]].count()[0]
