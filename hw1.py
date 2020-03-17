@@ -28,6 +28,10 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :param month: Month to get the cases for as an integer indexed from 1
     :return: Number of cases on a given date as an integer
     """
+    CONFIRMED_CASES_URL = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data" \
+                      f"/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv "
+    confirmed_cases = pd.read_csv(CONFIRMED_CASES_URL, error_bad_lines=False)
+
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     date = datetime.date(year, month, day)
