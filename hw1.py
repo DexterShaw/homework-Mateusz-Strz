@@ -32,7 +32,7 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     today = datetime.date(year, month, day)
-    today = today.strftime('%#m/%#d/%y')
+    today = today.strftime('%-m/%-d/%y')
     infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][today].values[0]
     return infection
 
@@ -54,7 +54,7 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     today = datetime.date(year, month, day)
-    today = date.strftime('%#m/%#d/%y')
+    today = date.strftime('%-m/%-d/%y')
     top =  confirmed_cases[['Province/State', 'Country/Region', today]]
     return list(top.groupby('Country/Region').sum().sort_values(by=today, ascending=False).head(5).index.values)
 
@@ -78,6 +78,6 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
         raise ValueError("if either number was negative")
     today = datetime.date(year, month, day)
     yesterday = today + datetime.timedelta(days=-1)
-    today = date.strftime('%#m/%#d/%y')
-    yesterday = yesterday.strftime('%#m/%#d/%y')
+    today = date.strftime('%-m/%-d/%y')
+    yesterday = yesterday.strftime('%-m/%-d/%y')
     return wynik[wynik[today]<=wynik[yesterday]].shape[0]
