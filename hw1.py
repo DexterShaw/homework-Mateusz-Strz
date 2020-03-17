@@ -28,7 +28,7 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :param month: Month to get the cases for as an integer indexed from 1
     :return: Number of cases on a given date as an integer
     """
-    if day==0 or month==0 or year==0:
+    if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     date = datetime.date(year, month, day)
     date = date.strftime('%#m/%#d/%y')
@@ -51,7 +51,7 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: A list of strings with the names of the coutires
     """
-    if day==0 or month==0 or year==0:
+    if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     date = datetime.date(year, month, day)
     date = date.strftime('%#m/%#d/%y')
@@ -74,7 +74,7 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: Number of countries/regions where the count has not changed in a day
     """
-    if day==0 or month==0 or year==0:
+    if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     date = datetime.date(year, month, day)
     yesterday = date + datetime.timedelta(days=-1)
