@@ -32,7 +32,6 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
         raise ValueError("if either number was negative")
     date = datetime.date(year, month, day)
     date = date.strftime('%#m/%#d/%y')
-    print(date)
     infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][date].values[0]
     return infection
 
@@ -80,7 +79,5 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     yesterday = date + datetime.timedelta(days=-1)
     date = date.strftime('%#m/%#d/%y')
     yesterday = yesterday.strftime('%#m/%#d/%y')
-    print(date)
-    print(yesterday)
     wynik = confirmed_cases.groupby(['Country/Region']).sum()
     return wynik[wynik[date]==wynik[yesterday]].count()[0]
