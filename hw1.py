@@ -51,6 +51,10 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: A list of strings with the names of the coutires
     """
+    CONFIRMED_CASES_URL = f"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data" \
+                      f"/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv "
+
+    confirmed_cases = pd.read_csv(CONFIRMED_CASES_URL, error_bad_lines=False)
     if day<=0 or month<=0 or year<=0:
         raise ValueError("if either number was negative")
     today = datetime.date(year, month, day)
