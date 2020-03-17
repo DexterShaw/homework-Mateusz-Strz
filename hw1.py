@@ -81,4 +81,4 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     yesterday = today + datetime.timedelta(days=-1)
     today = date.strftime('%-m/%-d/%y')
     yesterday = yesterday.strftime('%-m/%-d/%y')
-    return wynik[wynik[today]<=wynik[yesterday]].shape[0]
+    return wynik[wynik[today]!=wynik[yesterday]].shape[0]
