@@ -35,7 +35,7 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     today = today.strftime('%-m/%-d/%y')
     infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][today].values[0]
     return infection
-import datetime
+  
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
@@ -52,13 +52,11 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: A list of strings with the names of the coutires
     """
-    if day<=0 or month<=0 or year<=0:
-        raise ValueError("if either number was negative")
-    today = datetime.date(year, month, day)
-    today = date.strftime('%-m/%-d/%y')
-    top =  confirmed_cases[['Province/State', 'Country/Region', today]]
-    new = top.groupby('Country/Region').sum().sort_values(by=date, ascending=False).head(5)
-    return new.index.to_list()
+    date = datetime.date(year, month, day)
+    date = date.strftime('%#m/%#d/%y')
+    new = confirmed_cases.groupby('Country/Region').sum()
+    top = new.nlargest(5, date)
+    return top.index.to_list()
 
 import datetime
 
