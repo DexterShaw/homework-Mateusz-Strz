@@ -55,7 +55,7 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     date = datetime.date(year, month, day)
     date = date.strftime('%#m/%#d/%y')
     new = confirmed_cases.groupby('Country/Region').sum()
-    top = new.nlargest(5, date)
+    top = new.nlargest(5, date, keep='all')
     return top.index.to_list()
 
 import datetime
