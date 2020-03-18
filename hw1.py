@@ -35,6 +35,7 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     today = today.strftime('%-m/%-d/%y')
     infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][today].values[0]
     return infection
+import datetime
 
 def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     """
@@ -59,6 +60,7 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     new = top.groupby('Country/Region').sum().sort_values(by=date, ascending=False).head(5)
     return new.index.to_list()
 
+import datetime
 
 def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     """
