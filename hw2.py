@@ -40,8 +40,11 @@ def countries_with_no_deaths_count(date: datetime.date) -> int:
     :return: Number of countries with no deaths but with active cases on a given date as an integer
     """
     
-    # Your code goes here
-    pass
+    date = format_date(date)
+    no_death = dfD[dfD[date] == 0].index
+    infection = dfC[dfC[date] > 0].index
+    result = no_death.intersection(infection)
+    return result.shape[0]
 
 
 def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
@@ -64,6 +67,6 @@ def more_cured_than_deaths_indices(date: datetime.date) -> List[int]:
     :param date: Date object of the date to get the results for
     :return: A List of integers containing indices of countries which had more cured cases than deaths on a given date
     """
-    
-    # Your code goes here
-    pass
+    date = format_date(date)
+    result = dfR[dfR[date]>dfD[date]].index
+    return list(result)
