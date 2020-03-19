@@ -11,7 +11,11 @@ When downloading data it's better to do it in a global scope instead of a functi
 This speeds up the tests significantly
 """
 confirmed_cases = pd.read_csv(CONFIRMED_CASES_URL, error_bad_lines=False)
-
+def format_date(date: datetime.date):
+    if os.name == "nt":
+        return date.strftime('%#m/%#d/%y')
+    else:
+        return date.strftime('%-m/%-d/%y')
 
 def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     """
@@ -29,10 +33,8 @@ def poland_cases_by_date(day: int, month: int, year: int = 2020) -> int:
     :return: Number of cases on a given date as an integer
     """
 
-    if day<=0 or month<=0 or year<=0:
-        raise ValueError("if either number was negative")
     today = datetime.date(year, month, day)
-    today = today.strftime('%-m/%-d/%y')
+    today = format_date(today)
     infection = confirmed_cases.loc[confirmed_cases["Country/Region"]=="Poland"][today].values[0]
     return infection
   
@@ -52,11 +54,11 @@ def top5_countries_by_date(day: int, month: int, year: int = 2020) -> List[str]:
     :param year: Month to get the countries for as an integer indexed from 1
     :return: A list of strings with the names of the coutires
     """
-    date = datetime.date(year, month, day)
-    date = date.strftime('%#m/%#d/%y')
+    today = datetime.date(year, month, day)
+    today = format_date(today)
     new = confirmed_cases.groupby('Country/Region').sum()
-    top = new.nlargest(5, date, keep='all')
-    return top.index.to_list()
+    top = new.nlargest(5, today, keep='first')
+    return list(top.index)
 
 import datetime
 
@@ -77,6 +79,6 @@ def no_new_cases_count(day: int, month: int, year: int = 2020) -> int:
     """
     today = datetime.date(year, month, day)
     yesterday = today + datetime.timedelta(days=-1)
-    today = date.strftime('%-m/%-d/%y')
-    yesterday = yesterday.strftime('%-m/%-d/%y')
+    today = format_date(today)
+    yesterday = format_date(yesterday)
     return wynik[wynik[today]!=wynik[yesterday]].shape[0]
